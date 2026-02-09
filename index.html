@@ -402,7 +402,6 @@
       .nav-links a:hover {
         background: var(--cyan-dim);
         color: var(--cyan);
-        padding-left: 18px;
       }
 
       .nav-links a:hover::before {
@@ -3171,6 +3170,7 @@
       const starCtx = starCanvas.getContext("2d");
       const stars = [];
       const shootingStars = [];
+      const fullCircle = Math.PI * 2;
       let animationFrame;
 
       const resizeCanvas = () => {
@@ -3180,46 +3180,49 @@
       };
 
       const createStars = () => {
-        const area = starCanvas.width * starCanvas.height;
-        const starCount = Math.floor(area / 6000);
+        const area = starCanvas.width * window.innerHeight;
+        const starCount = Math.floor(area / 10_000);
         stars.length = 0;
 
         for (let i = 0; i < starCount; i++) {
+          const hue =
+            Math.random() > 0.85 ? (Math.random() > 0.5 ? 190 : 270) : 0;
+          const color = hue > 0 ? `hsl(${hue}, 70%, 80%)` : "white";
+
           stars.push({
             x: Math.random() * starCanvas.width,
             y: Math.random() * starCanvas.height,
             radius: Math.random() * 1.2 + 0.3,
             baseOpacity: Math.random() * 0.6 + 0.2,
             twinkleSpeed: Math.random() * 0.03 + 0.008,
-            phase: Math.random() * Math.PI * 2,
-            hue: Math.random() > 0.85 ? (Math.random() > 0.5 ? 190 : 270) : 0,
+            phase: Math.random() * fullCircle,
+            color,
           });
         }
       };
 
       const renderStars = (time) => {
-        starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+        const canvasWidth = starCanvas.width;
+        const canvasHeight = starCanvas.height;
+        starCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         for (const star of stars) {
           const twinkle =
             Math.sin(time * star.twinkleSpeed + star.phase) * 0.35 + 0.65;
           const opacity = star.baseOpacity * twinkle;
 
-          if (star.hue > 0) {
-            starCtx.fillStyle = `hsla(${star.hue}, 70%, 80%, ${opacity})`;
-          } else {
-            starCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-          }
-
+          starCtx.globalAlpha = opacity;
+          starCtx.fillStyle = star.color;
           starCtx.beginPath();
-          starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+          starCtx.arc(star.x, star.y, star.radius, 0, fullCircle);
           starCtx.fill();
         }
 
+        starCtx.globalAlpha = 1;
         if (Math.random() < 0.003) {
           shootingStars.push({
-            x: Math.random() * starCanvas.width,
-            y: Math.random() * starCanvas.height * 0.4,
+            x: Math.random() * canvasWidth,
+            y: Math.random() * canvasHeight * 0.4,
             velocityX: (Math.random() - 0.3) * 6,
             velocityY: Math.random() * 3 + 1.5,
             life: 1.0,
@@ -3227,42 +3230,44 @@
           });
         }
 
-        for (let i = shootingStars.length - 1; i >= 0; i--) {
-          const ss = shootingStars[i];
-          ss.x += ss.velocityX;
-          ss.y += ss.velocityY;
-          ss.life -= 0.012;
-
-          if (ss.life <= 0) {
-            shootingStars.splice(i, 1);
-            continue;
-          }
-
-          const tailEndX = ss.x - (ss.velocityX * ss.tailLength) / 6;
-          const tailEndY = ss.y - (ss.velocityY * ss.tailLength) / 6;
-
-          const gradient = starCtx.createLinearGradient(
-            ss.x,
-            ss.y,
-            tailEndX,
-            tailEndY
-          );
-          gradient.addColorStop(0, `rgba(34, 211, 238, ${ss.life * 0.9})`);
-          gradient.addColorStop(0.3, `rgba(255, 255, 255, ${ss.life * 0.6})`);
-          gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-
-          starCtx.globalAlpha = 1;
-          starCtx.strokeStyle = gradient;
+        if (shootingStars.length > 0) {
           starCtx.lineWidth = 1.5;
-          starCtx.beginPath();
-          starCtx.moveTo(ss.x, ss.y);
-          starCtx.lineTo(tailEndX, tailEndY);
-          starCtx.stroke();
 
-          starCtx.fillStyle = `rgba(34, 211, 238, ${ss.life})`;
-          starCtx.beginPath();
-          starCtx.arc(ss.x, ss.y, 1.5, 0, Math.PI * 2);
-          starCtx.fill();
+          for (let i = shootingStars.length - 1; i >= 0; i--) {
+            const ss = shootingStars[i];
+            ss.x += ss.velocityX;
+            ss.y += ss.velocityY;
+            ss.life -= 0.012;
+
+            if (ss.life <= 0) {
+              shootingStars.splice(i, 1);
+              continue;
+            }
+
+            const tailEndX = ss.x - (ss.velocityX * ss.tailLength) / 6;
+            const tailEndY = ss.y - (ss.velocityY * ss.tailLength) / 6;
+
+            const gradient = starCtx.createLinearGradient(
+              ss.x,
+              ss.y,
+              tailEndX,
+              tailEndY
+            );
+            gradient.addColorStop(0, `rgba(34, 211, 238, ${ss.life * 0.9})`);
+            gradient.addColorStop(0.3, `rgba(255, 255, 255, ${ss.life * 0.6})`);
+            gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+            starCtx.strokeStyle = gradient;
+            starCtx.beginPath();
+            starCtx.moveTo(ss.x, ss.y);
+            starCtx.lineTo(tailEndX, tailEndY);
+            starCtx.stroke();
+
+            starCtx.fillStyle = `rgba(34, 211, 238, ${ss.life})`;
+            starCtx.beginPath();
+            starCtx.arc(ss.x, ss.y, 1.5, 0, fullCircle);
+            starCtx.fill();
+          }
         }
 
         starCtx.globalAlpha = 1;
