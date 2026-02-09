@@ -119,11 +119,7 @@
             rgba(34, 211, 238, 0.03) 1px,
             transparent 1px
           ),
-          linear-gradient(
-            90deg,
-            rgba(34, 211, 238, 0.03) 1px,
-            transparent 1px
-          );
+          linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
         background-size: 60px 60px;
         mask-image: radial-gradient(
           ellipse 80% 70% at 50% 40%,
@@ -622,7 +618,12 @@
         border: 1px solid transparent;
         background: linear-gradient(var(--glass-solid), var(--glass-solid))
             padding-box,
-          linear-gradient(135deg, var(--cyan-glow), transparent, var(--purple-glow))
+          linear-gradient(
+              135deg,
+              var(--cyan-glow),
+              transparent,
+              var(--purple-glow)
+            )
             border-box;
         mask: linear-gradient(#fff 0 0) padding-box,
           linear-gradient(#fff 0 0) border-box;
@@ -1769,7 +1770,7 @@
       @media print {
         @page {
           size: A4 portrait;
-          margin: 12mm 10mm;
+          margin: 15mm 12mm;
         }
 
         * {
@@ -1778,16 +1779,16 @@
         }
 
         html {
-          background: #0b1123;
+          background: #ffffff;
         }
 
         body {
-          background: #0b1123;
-          color: #e2e8f0;
+          background: #ffffff;
+          color: #1a1a2e;
           padding: 0;
           display: block;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
+          font-size: 11pt;
+          line-height: 1.5;
         }
 
         #starfield,
@@ -1807,7 +1808,7 @@
         }
 
         .page > * {
-          margin-bottom: 24px;
+          margin-bottom: 16px;
         }
 
         /* ── Kill all decorative pseudo-elements ── */
@@ -1838,18 +1839,18 @@
           display: none !important;
         }
 
-        /* ── Fix gradient text to be solid white ── */
+        /* ── Text colors ── */
 
         .hero h1,
         .section-head h2,
         .metric-value,
         .stat-value {
-          -webkit-text-fill-color: white !important;
+          -webkit-text-fill-color: #1a1a2e !important;
           background: none !important;
-          color: white !important;
+          color: #1a1a2e !important;
         }
 
-        /* ── Solid backgrounds for all cards ── */
+        /* ── Card styles ── */
 
         .profile-card,
         .signal-card,
@@ -1864,30 +1865,31 @@
         .talk-card,
         .contact-block,
         .oss-showcase {
-          background: #0f172a !important;
-          color: #e2e8f0;
-          border: 1px solid #334155 !important;
+          background: #f8f9fa !important;
+          color: #1a1a2e;
+          border: 1px solid #dee2e6 !important;
           box-shadow: none !important;
           overflow: visible;
         }
 
         .tag {
-          background: #1c2947 !important;
-          border-color: #334155 !important;
-          color: #e2e8f0 !important;
+          background: #e9ecef !important;
+          border: 1px solid #dee2e6 !important;
+          color: #495057 !important;
         }
 
         .oss-badge {
-          background: #1c2947 !important;
-          border-color: #334155 !important;
-          color: #67e8f9 !important;
+          background: #e9ecef !important;
+          border: 1px solid #dee2e6 !important;
+          color: #0066cc !important;
         }
 
         /* ── Hero layout for A4 ── */
 
         .hero {
-          grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
-          gap: 20px;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+          margin-bottom: 20px;
         }
 
         .hero-metrics {
@@ -1895,27 +1897,30 @@
         }
 
         .hero-copy h1 {
-          font-size: 32px;
+          font-size: 22pt;
+          line-height: 1.2;
+          margin-bottom: 12px;
         }
 
         .hero-copy .hero-lede {
-          max-width: 380px;
-          font-size: 14px;
+          max-width: 100%;
+          font-size: 11pt;
+          color: #495057;
         }
 
         /* ── Avatar ── */
 
         .avatar-wrap {
-          width: 120px;
-          height: 120px;
+          width: 100px;
+          height: 100px;
         }
 
         .avatar-wrap .avatar {
-          width: 120px;
-          min-width: 120px;
-          height: 120px;
+          width: 100px;
+          min-width: 100px;
+          height: 100px;
           border-radius: 50%;
-          border-color: #334155;
+          border: 2px solid #dee2e6;
         }
 
         .orbit-ring {
@@ -1924,63 +1929,91 @@
 
         .profile-card {
           padding: 16px;
-          gap: 14px;
+          gap: 12px;
         }
 
         .profile-body h2 {
-          font-size: 18px;
+          font-size: 14pt;
+          margin-bottom: 4px;
+        }
+
+        .profile-role {
+          color: #495057;
+          font-size: 10pt;
         }
 
         .profile-meta {
-          font-size: 12px;
+          font-size: 9pt;
+        }
+
+        .meta-row a {
+          color: #0066cc !important;
+          text-decoration: underline;
         }
 
         .signal-card {
-          padding: 16px;
-          gap: 10px;
+          padding: 14px;
+          gap: 8px;
+          margin-top: 12px;
         }
 
         .signal-title {
-          font-size: 14px;
+          font-size: 11pt;
+          font-weight: 600;
+          color: #1a1a2e;
         }
 
         .signal-text,
         .signal-list {
-          font-size: 12px;
+          font-size: 9.5pt;
+          color: #495057;
+        }
+
+        .signal-list li {
+          padding-left: 0;
         }
 
         /* ── About section ── */
 
         .contact-grid {
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: repeat(3, 1fr);
           gap: 12px;
         }
 
         .contact-block {
-          padding: 14px;
-          gap: 6px;
+          padding: 12px;
+          gap: 4px;
         }
 
         .contact-block h3 {
-          font-size: 13px;
+          font-size: 10pt;
+          color: #1a1a2e;
         }
 
         .contact-block p {
-          font-size: 12px;
+          font-size: 9pt;
+          color: #495057;
         }
 
         /* ── Section headings ── */
 
+        .section-head {
+          margin-bottom: 12px;
+        }
+
         .section-head h2 {
-          font-size: 22px;
+          font-size: 14pt;
+          margin-bottom: 4px;
         }
 
         .section-lede {
-          font-size: 13px;
+          font-size: 10pt;
+          color: #495057;
         }
 
         .section {
-          gap: 16px;
+          gap: 12px;
+          margin-bottom: 20px;
         }
 
         /* ── Timeline ── */
@@ -2001,35 +2034,40 @@
 
         .timeline-item {
           padding: 12px;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
           break-inside: avoid;
           page-break-inside: avoid;
         }
 
         .timeline-item h3 {
-          font-size: 14px;
+          font-size: 11pt;
+          color: #1a1a2e;
         }
 
         .timeline-company {
-          font-size: 12px;
-          color: #67e8f9;
+          font-size: 10pt;
+          color: #0066cc;
         }
 
         .timeline-date {
-          font-size: 11px;
+          font-size: 9pt;
+          color: #6c757d;
         }
 
         .timeline-list {
-          font-size: 12px;
-          gap: 4px;
+          font-size: 9.5pt;
+          gap: 3px;
+          color: #495057;
         }
 
         .timeline-list li {
-          padding-left: 10px;
+          padding-left: 0;
         }
 
         .timeline-summary {
-          font-size: 10px;
+          font-size: 8pt;
+          color: #6c757d;
+          margin-top: 8px;
         }
 
         /* ── OSS ── */
@@ -2040,8 +2078,18 @@
         }
 
         .oss-showcase {
-          padding: 14px;
-          gap: 12px;
+          padding: 12px;
+          gap: 10px;
+        }
+
+        .oss-header h3 {
+          font-size: 11pt;
+          color: #1a1a2e;
+        }
+
+        .oss-body {
+          font-size: 9pt;
+          color: #495057;
         }
 
         .stat-grid {
@@ -2050,15 +2098,17 @@
         }
 
         .stat-card {
-          padding: 10px;
+          padding: 8px;
         }
 
         .stat-value {
-          font-size: 16px;
+          font-size: 14pt;
+          color: #1a1a2e;
         }
 
         .stat-label {
-          font-size: 9px;
+          font-size: 8pt;
+          color: #6c757d;
         }
 
         .btn {
@@ -2082,51 +2132,73 @@
         }
 
         .talk-thumb img {
-          max-height: 100px;
+          max-height: 80px;
         }
 
         .talk-body {
-          padding: 10px;
-          gap: 4px;
+          padding: 8px;
+          gap: 3px;
         }
 
         .talk-title {
-          font-size: 12px;
+          font-size: 9pt;
+          color: #1a1a2e;
         }
 
         .talk-meta {
-          font-size: 9px;
+          font-size: 8pt;
+          color: #6c757d;
         }
 
         .talk-action {
-          font-size: 10px;
+          font-size: 8pt;
+          color: #0066cc;
         }
 
         .card p,
         .feature-list {
-          font-size: 12px;
+          font-size: 9.5pt;
+          color: #495057;
         }
 
-        /* ── Page breaks ── */
+        .feature-list li {
+          padding-left: 0;
+        }
+
+        .plan-card {
+          padding: 12px;
+        }
+
+        .plan-name {
+          font-size: 11pt;
+          color: #1a1a2e;
+        }
+
+        .plan-time {
+          font-size: 9pt;
+          color: #6c757d;
+        }
+
+        /* ── Page breaks - minimal and smart ── */
 
         main.hero {
-          break-after: auto;
-          page-break-after: auto;
-          break-inside: avoid-page;
-          page-break-inside: avoid;
+          break-after: avoid;
+          page-break-after: avoid;
         }
 
         section.section {
-          break-before: page;
-          page-break-before: always;
-          break-inside: avoid-page;
-          page-break-inside: avoid;
-        }
-
-        section#contact {
           break-before: auto;
           page-break-before: auto;
-          break-inside: avoid-page;
+          break-inside: auto;
+          page-break-inside: auto;
+        }
+
+        .timeline-item,
+        .talk-card,
+        .oss-showcase,
+        .contact-block,
+        .plan-card {
+          break-inside: avoid;
           page-break-inside: avoid;
         }
 
@@ -2142,7 +2214,12 @@
         /* ── Links ── */
 
         a {
-          color: inherit !important;
+          color: #0066cc !important;
+          text-decoration: underline;
+        }
+
+        a[href^="http"]:after {
+          content: "";
         }
       }
     </style>
@@ -2297,23 +2374,120 @@
       </main>
 
       <div class="circuit-divider">
-        <svg viewBox="0 0 1200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="20" x2="440" y2="20" stroke="rgba(34,211,238,0.2)" stroke-width="1"/>
-          <circle cx="445" cy="20" r="3" fill="rgba(34,211,238,0.4)"/>
-          <line x1="450" y1="20" x2="500" y2="20" stroke="rgba(34,211,238,0.3)" stroke-width="1"/>
-          <rect x="505" y="12" width="190" height="16" rx="3" stroke="rgba(34,211,238,0.2)" stroke-width="1" fill="rgba(34,211,238,0.03)"/>
-          <line x1="530" y1="8" x2="530" y2="12" stroke="rgba(34,211,238,0.15)" stroke-width="1"/>
-          <line x1="555" y1="8" x2="555" y2="12" stroke="rgba(34,211,238,0.15)" stroke-width="1"/>
-          <line x1="580" y1="8" x2="580" y2="12" stroke="rgba(34,211,238,0.15)" stroke-width="1"/>
-          <line x1="620" y1="28" x2="620" y2="32" stroke="rgba(34,211,238,0.15)" stroke-width="1"/>
-          <line x1="645" y1="28" x2="645" y2="32" stroke="rgba(34,211,238,0.15)" stroke-width="1"/>
-          <line x1="670" y1="28" x2="670" y2="32" stroke="rgba(34,211,238,0.15)" stroke-width="1"/>
-          <text x="600" y="23" text-anchor="middle" fill="rgba(34,211,238,0.3)" font-size="8" font-family="JetBrains Mono, monospace" letter-spacing="2">ABOUT</text>
-          <line x1="700" y1="20" x2="750" y2="20" stroke="rgba(34,211,238,0.3)" stroke-width="1"/>
-          <circle cx="755" cy="20" r="3" fill="rgba(34,211,238,0.4)"/>
-          <line x1="760" y1="20" x2="1200" y2="20" stroke="rgba(34,211,238,0.2)" stroke-width="1"/>
+        <svg
+          viewBox="0 0 1200 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            x1="0"
+            y1="20"
+            x2="440"
+            y2="20"
+            stroke="rgba(34,211,238,0.2)"
+            stroke-width="1"
+          />
+          <circle cx="445" cy="20" r="3" fill="rgba(34,211,238,0.4)" />
+          <line
+            x1="450"
+            y1="20"
+            x2="500"
+            y2="20"
+            stroke="rgba(34,211,238,0.3)"
+            stroke-width="1"
+          />
+          <rect
+            x="505"
+            y="12"
+            width="190"
+            height="16"
+            rx="3"
+            stroke="rgba(34,211,238,0.2)"
+            stroke-width="1"
+            fill="rgba(34,211,238,0.03)"
+          />
+          <line
+            x1="530"
+            y1="8"
+            x2="530"
+            y2="12"
+            stroke="rgba(34,211,238,0.15)"
+            stroke-width="1"
+          />
+          <line
+            x1="555"
+            y1="8"
+            x2="555"
+            y2="12"
+            stroke="rgba(34,211,238,0.15)"
+            stroke-width="1"
+          />
+          <line
+            x1="580"
+            y1="8"
+            x2="580"
+            y2="12"
+            stroke="rgba(34,211,238,0.15)"
+            stroke-width="1"
+          />
+          <line
+            x1="620"
+            y1="28"
+            x2="620"
+            y2="32"
+            stroke="rgba(34,211,238,0.15)"
+            stroke-width="1"
+          />
+          <line
+            x1="645"
+            y1="28"
+            x2="645"
+            y2="32"
+            stroke="rgba(34,211,238,0.15)"
+            stroke-width="1"
+          />
+          <line
+            x1="670"
+            y1="28"
+            x2="670"
+            y2="32"
+            stroke="rgba(34,211,238,0.15)"
+            stroke-width="1"
+          />
+          <text
+            x="600"
+            y="23"
+            text-anchor="middle"
+            fill="rgba(34,211,238,0.3)"
+            font-size="8"
+            font-family="JetBrains Mono, monospace"
+            letter-spacing="2"
+          >
+            ABOUT
+          </text>
+          <line
+            x1="700"
+            y1="20"
+            x2="750"
+            y2="20"
+            stroke="rgba(34,211,238,0.3)"
+            stroke-width="1"
+          />
+          <circle cx="755" cy="20" r="3" fill="rgba(34,211,238,0.4)" />
+          <line
+            x1="760"
+            y1="20"
+            x2="1200"
+            y2="20"
+            stroke="rgba(34,211,238,0.2)"
+            stroke-width="1"
+          />
           <circle r="2" fill="rgba(34,211,238,0.8)">
-            <animateMotion dur="3s" repeatCount="indefinite" path="M0,20 L1200,20"/>
+            <animateMotion
+              dur="3s"
+              repeatCount="indefinite"
+              path="M0,20 L1200,20"
+            />
           </circle>
         </svg>
       </div>
@@ -2353,18 +2527,80 @@
       </section>
 
       <div class="circuit-divider">
-        <svg viewBox="0 0 1200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="20" x2="380" y2="20" stroke="rgba(124,58,237,0.2)" stroke-width="1"/>
-          <circle cx="385" cy="20" r="3" fill="rgba(124,58,237,0.4)"/>
-          <line x1="390" y1="20" x2="390" y2="10" stroke="rgba(124,58,237,0.3)" stroke-width="1"/>
-          <line x1="390" y1="10" x2="810" y2="10" stroke="rgba(124,58,237,0.2)" stroke-width="1"/>
-          <line x1="810" y1="10" x2="810" y2="20" stroke="rgba(124,58,237,0.3)" stroke-width="1"/>
-          <circle cx="815" cy="20" r="3" fill="rgba(124,58,237,0.4)"/>
-          <line x1="820" y1="20" x2="1200" y2="20" stroke="rgba(124,58,237,0.2)" stroke-width="1"/>
-          <rect x="520" y="14" width="160" height="12" rx="2" stroke="rgba(124,58,237,0.15)" stroke-width="1" fill="rgba(124,58,237,0.03)"/>
-          <text x="600" y="23" text-anchor="middle" fill="rgba(124,58,237,0.3)" font-size="7" font-family="JetBrains Mono, monospace" letter-spacing="2">EXPERIENCE</text>
+        <svg
+          viewBox="0 0 1200 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            x1="0"
+            y1="20"
+            x2="380"
+            y2="20"
+            stroke="rgba(124,58,237,0.2)"
+            stroke-width="1"
+          />
+          <circle cx="385" cy="20" r="3" fill="rgba(124,58,237,0.4)" />
+          <line
+            x1="390"
+            y1="20"
+            x2="390"
+            y2="10"
+            stroke="rgba(124,58,237,0.3)"
+            stroke-width="1"
+          />
+          <line
+            x1="390"
+            y1="10"
+            x2="810"
+            y2="10"
+            stroke="rgba(124,58,237,0.2)"
+            stroke-width="1"
+          />
+          <line
+            x1="810"
+            y1="10"
+            x2="810"
+            y2="20"
+            stroke="rgba(124,58,237,0.3)"
+            stroke-width="1"
+          />
+          <circle cx="815" cy="20" r="3" fill="rgba(124,58,237,0.4)" />
+          <line
+            x1="820"
+            y1="20"
+            x2="1200"
+            y2="20"
+            stroke="rgba(124,58,237,0.2)"
+            stroke-width="1"
+          />
+          <rect
+            x="520"
+            y="14"
+            width="160"
+            height="12"
+            rx="2"
+            stroke="rgba(124,58,237,0.15)"
+            stroke-width="1"
+            fill="rgba(124,58,237,0.03)"
+          />
+          <text
+            x="600"
+            y="23"
+            text-anchor="middle"
+            fill="rgba(124,58,237,0.3)"
+            font-size="7"
+            font-family="JetBrains Mono, monospace"
+            letter-spacing="2"
+          >
+            EXPERIENCE
+          </text>
           <circle r="2" fill="rgba(124,58,237,0.8)">
-            <animateMotion dur="4s" repeatCount="indefinite" path="M0,20 L385,20 L390,10 L810,10 L810,20 L1200,20"/>
+            <animateMotion
+              dur="4s"
+              repeatCount="indefinite"
+              path="M0,20 L385,20 L390,10 L810,10 L810,20 L1200,20"
+            />
           </circle>
         </svg>
       </div>
@@ -2577,19 +2813,86 @@
       </section>
 
       <div class="circuit-divider">
-        <svg viewBox="0 0 1200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="20" x2="300" y2="20" stroke="rgba(34,211,238,0.2)" stroke-width="1"/>
-          <line x1="300" y1="20" x2="320" y2="8" stroke="rgba(34,211,238,0.25)" stroke-width="1"/>
-          <line x1="320" y1="8" x2="880" y2="8" stroke="rgba(34,211,238,0.15)" stroke-width="1"/>
-          <line x1="880" y1="8" x2="900" y2="20" stroke="rgba(34,211,238,0.25)" stroke-width="1"/>
-          <line x1="900" y1="20" x2="1200" y2="20" stroke="rgba(34,211,238,0.2)" stroke-width="1"/>
-          <circle cx="300" cy="20" r="2.5" fill="rgba(34,211,238,0.5)"/>
-          <circle cx="900" cy="20" r="2.5" fill="rgba(34,211,238,0.5)"/>
-          <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(124,58,237,0.1)" stroke-width="1"/>
-          <line x1="700" y1="30" x2="1200" y2="30" stroke="rgba(124,58,237,0.1)" stroke-width="1"/>
-          <text x="600" y="12" text-anchor="middle" fill="rgba(34,211,238,0.25)" font-size="7" font-family="JetBrains Mono, monospace" letter-spacing="3">OPEN SOURCE</text>
+        <svg
+          viewBox="0 0 1200 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            x1="0"
+            y1="20"
+            x2="300"
+            y2="20"
+            stroke="rgba(34,211,238,0.2)"
+            stroke-width="1"
+          />
+          <line
+            x1="300"
+            y1="20"
+            x2="320"
+            y2="8"
+            stroke="rgba(34,211,238,0.25)"
+            stroke-width="1"
+          />
+          <line
+            x1="320"
+            y1="8"
+            x2="880"
+            y2="8"
+            stroke="rgba(34,211,238,0.15)"
+            stroke-width="1"
+          />
+          <line
+            x1="880"
+            y1="8"
+            x2="900"
+            y2="20"
+            stroke="rgba(34,211,238,0.25)"
+            stroke-width="1"
+          />
+          <line
+            x1="900"
+            y1="20"
+            x2="1200"
+            y2="20"
+            stroke="rgba(34,211,238,0.2)"
+            stroke-width="1"
+          />
+          <circle cx="300" cy="20" r="2.5" fill="rgba(34,211,238,0.5)" />
+          <circle cx="900" cy="20" r="2.5" fill="rgba(34,211,238,0.5)" />
+          <line
+            x1="0"
+            y1="30"
+            x2="500"
+            y2="30"
+            stroke="rgba(124,58,237,0.1)"
+            stroke-width="1"
+          />
+          <line
+            x1="700"
+            y1="30"
+            x2="1200"
+            y2="30"
+            stroke="rgba(124,58,237,0.1)"
+            stroke-width="1"
+          />
+          <text
+            x="600"
+            y="12"
+            text-anchor="middle"
+            fill="rgba(34,211,238,0.25)"
+            font-size="7"
+            font-family="JetBrains Mono, monospace"
+            letter-spacing="3"
+          >
+            OPEN SOURCE
+          </text>
           <circle r="1.5" fill="rgba(34,211,238,0.7)">
-            <animateMotion dur="3.5s" repeatCount="indefinite" path="M0,20 L300,20 L320,8 L880,8 L900,20 L1200,20"/>
+            <animateMotion
+              dur="3.5s"
+              repeatCount="indefinite"
+              path="M0,20 L300,20 L320,8 L880,8 L900,20 L1200,20"
+            />
           </circle>
         </svg>
       </div>
@@ -2670,17 +2973,77 @@
       </section>
 
       <div class="circuit-divider">
-        <svg viewBox="0 0 1200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="15" x2="550" y2="15" stroke="rgba(251,191,36,0.15)" stroke-width="1"/>
-          <line x1="0" y1="25" x2="520" y2="25" stroke="rgba(34,211,238,0.12)" stroke-width="1"/>
-          <circle cx="555" cy="15" r="3" fill="rgba(251,191,36,0.3)"/>
-          <line x1="560" y1="15" x2="640" y2="15" stroke="rgba(251,191,36,0.2)" stroke-width="1"/>
-          <line x1="640" y1="15" x2="640" y2="25" stroke="rgba(251,191,36,0.2)" stroke-width="1"/>
-          <line x1="640" y1="25" x2="1200" y2="25" stroke="rgba(34,211,238,0.12)" stroke-width="1"/>
-          <line x1="560" y1="15" x2="1200" y2="15" stroke="rgba(251,191,36,0.15)" stroke-width="1"/>
-          <text x="600" y="36" text-anchor="middle" fill="rgba(251,191,36,0.2)" font-size="7" font-family="JetBrains Mono, monospace" letter-spacing="2">TALKS</text>
+        <svg
+          viewBox="0 0 1200 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            x1="0"
+            y1="15"
+            x2="550"
+            y2="15"
+            stroke="rgba(251,191,36,0.15)"
+            stroke-width="1"
+          />
+          <line
+            x1="0"
+            y1="25"
+            x2="520"
+            y2="25"
+            stroke="rgba(34,211,238,0.12)"
+            stroke-width="1"
+          />
+          <circle cx="555" cy="15" r="3" fill="rgba(251,191,36,0.3)" />
+          <line
+            x1="560"
+            y1="15"
+            x2="640"
+            y2="15"
+            stroke="rgba(251,191,36,0.2)"
+            stroke-width="1"
+          />
+          <line
+            x1="640"
+            y1="15"
+            x2="640"
+            y2="25"
+            stroke="rgba(251,191,36,0.2)"
+            stroke-width="1"
+          />
+          <line
+            x1="640"
+            y1="25"
+            x2="1200"
+            y2="25"
+            stroke="rgba(34,211,238,0.12)"
+            stroke-width="1"
+          />
+          <line
+            x1="560"
+            y1="15"
+            x2="1200"
+            y2="15"
+            stroke="rgba(251,191,36,0.15)"
+            stroke-width="1"
+          />
+          <text
+            x="600"
+            y="36"
+            text-anchor="middle"
+            fill="rgba(251,191,36,0.2)"
+            font-size="7"
+            font-family="JetBrains Mono, monospace"
+            letter-spacing="2"
+          >
+            TALKS
+          </text>
           <circle r="1.5" fill="rgba(251,191,36,0.6)">
-            <animateMotion dur="5s" repeatCount="indefinite" path="M0,15 L555,15 L640,15 L640,25 L1200,25"/>
+            <animateMotion
+              dur="5s"
+              repeatCount="indefinite"
+              path="M0,15 L555,15 L640,15 L640,25 L1200,25"
+            />
           </circle>
         </svg>
       </div>
@@ -2946,7 +3309,9 @@
       document.querySelectorAll(".timeline-item").forEach((item, index) => {
         item.style.opacity = "0";
         item.style.transform = "translateX(-16px)";
-        item.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+        item.style.transition = `opacity 0.5s ease ${
+          index * 0.1
+        }s, transform 0.5s ease ${index * 0.1}s`;
 
         const itemObserver = new IntersectionObserver(
           (entries) => {
