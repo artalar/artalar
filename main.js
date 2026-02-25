@@ -212,6 +212,177 @@ const setupScrollReveal = () => {
   });
 };
 
+const BRAILLE_SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏";
+const STEP_DURATION_MS = 2000;
+const SPINNER_INTERVAL_MS = 80;
+const SUCCESS_HOLD_MS = 2000;
+
+const PIPELINE_STEPS = [
+  "Plan the approach",
+  "Write tests for expected behavior",
+  "Write code to pass tests",
+  "Fix failing tests",
+  "Review and clean up",
+];
+
+const FEATURES = [
+  "dark-mode toggle",
+  "search with filters",
+  "notification preferences",
+  "keyboard shortcuts",
+  "data export to CSV",
+  "user onboarding flow",
+  "real-time collaboration",
+  "accessibility audit",
+];
+
+const setupAsciiTerminal = () => {
+  const body = document.getElementById("ai-terminal-body");
+  if (!body) return;
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const featureSpan = document.createElement("span");
+  featureSpan.id = "at-feature";
+
+  const promptIcon = document.createElement("span");
+  promptIcon.className = "at-status at-prompt";
+  promptIcon.textContent = ">";
+
+  const promptLabel = document.createElement("span");
+  promptLabel.className = "at-prompt";
+  promptLabel.textContent = " @agent implement ";
+
+  const promptLine = document.createElement("span");
+  promptLine.className = "at-line at-prompt-line";
+  promptLine.appendChild(promptIcon);
+  promptLine.appendChild(promptLabel);
+  promptLine.appendChild(featureSpan);
+
+  const blankLine = () => {
+    const span = document.createElement("span");
+    span.className = "at-line at-blank";
+    return span;
+  };
+
+  const stepLines = PIPELINE_STEPS.map((label) => {
+    const statusSpan = document.createElement("span");
+    statusSpan.className = "at-status";
+
+    const lineSpan = document.createElement("span");
+    lineSpan.className = "at-line at-step";
+    lineSpan.appendChild(statusSpan);
+    lineSpan.appendChild(document.createTextNode(" " + label));
+    lineSpan.dataset.step = String(PIPELINE_STEPS.indexOf(label));
+    return { line: lineSpan, status: statusSpan };
+  });
+
+  const successStatus = document.createElement("span");
+  successStatus.className = "at-status";
+
+  const successText = document.createElement("span");
+  successText.textContent = "";
+
+  const successLine = document.createElement("span");
+  successLine.className = "at-line";
+  successLine.id = "at-success";
+  successLine.style.visibility = "hidden";
+  successLine.appendChild(successStatus);
+  successLine.appendChild(successText);
+
+  body.appendChild(promptLine);
+  body.appendChild(blankLine());
+  stepLines.forEach(({ line }) => body.appendChild(line));
+  body.appendChild(blankLine());
+  body.appendChild(successLine);
+
+  if (prefersReducedMotion) {
+    featureSpan.textContent = FEATURES[0];
+    stepLines.forEach(({ status }) => {
+      status.textContent = "✓";
+      status.classList.add("at-ok");
+    });
+    successStatus.textContent = "✓";
+    successStatus.classList.add("at-ok");
+    successText.textContent = " " + FEATURES[0] + " shipped";
+    successLine.classList.add("at-success");
+    successLine.style.visibility = "";
+    return;
+  }
+
+  let currentFeatureIndex = 0;
+  let activeStep = 0;
+  let spinnerFrame = 0;
+  let lastSpinnerUpdate = 0;
+  let stepStartTime = 0;
+  let phase = "steps";
+  let successShownAt = 0;
+  let animationFrameId = 0;
+
+  const setStepStatus = (index, char) => {
+    stepLines[index].status.textContent = char;
+    stepLines[index].status.classList.toggle("at-ok", char === "✓");
+    stepLines[index].status.classList.toggle("at-spin", char !== "✓" && char !== "·");
+  };
+
+  const resetCycle = () => {
+    currentFeatureIndex = (currentFeatureIndex + 1) % FEATURES.length;
+    const feature = FEATURES[currentFeatureIndex];
+    featureSpan.textContent = feature;
+
+    stepLines.forEach((_, i) => {
+      setStepStatus(i, "·");
+    });
+    activeStep = 0;
+    stepStartTime = performance.now();
+    lastSpinnerUpdate = performance.now();
+    phase = "steps";
+    successStatus.textContent = "";
+    successText.textContent = "";
+    successLine.style.visibility = "hidden";
+    successLine.classList.remove("at-success");
+  };
+
+  const tick = (now) => {
+    if (phase === "steps") {
+      const elapsed = now - stepStartTime;
+      if (activeStep < stepLines.length) {
+        if (now - lastSpinnerUpdate >= SPINNER_INTERVAL_MS) {
+          spinnerFrame++;
+          lastSpinnerUpdate = now;
+        }
+        setStepStatus(activeStep, BRAILLE_SPINNER[spinnerFrame % BRAILLE_SPINNER.length]);
+
+        if (elapsed >= STEP_DURATION_MS) {
+          setStepStatus(activeStep, "✓");
+          activeStep++;
+          stepStartTime = now;
+        }
+      } else {
+        successStatus.textContent = "✓";
+        successStatus.classList.add("at-ok");
+        successText.textContent = " " + FEATURES[currentFeatureIndex] + " shipped";
+        successLine.classList.add("at-success");
+        successLine.style.visibility = "";
+        phase = "success";
+        successShownAt = now;
+      }
+    } else if (phase === "success") {
+      if (now - successShownAt >= SUCCESS_HOLD_MS) {
+        resetCycle();
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(tick);
+  };
+
+  featureSpan.textContent = FEATURES[0];
+  stepLines.forEach((_, i) => setStepStatus(i, "·"));
+  stepStartTime = performance.now();
+  animationFrameId = requestAnimationFrame(tick);
+};
+
 setupPrintHandlers();
 setupStarfield();
 setupScrollReveal();
+setupAsciiTerminal();
