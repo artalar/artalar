@@ -1287,6 +1287,7 @@ details[open] .timeline-summary::before {
   .nebula-layer,
   .grid-overlay,
   .circuit-divider,
+  #ai,
   .ai-terminal {
     display: none !important;
   }
@@ -1370,7 +1371,7 @@ details[open] .timeline-summary::before {
   }
 
   .hero {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 2fr;
     gap: 24px;
     margin-bottom: 20px;
   }
