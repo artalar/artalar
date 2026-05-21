@@ -1122,6 +1122,169 @@ details[open] .timeline-summary::before {
   }
 }
 
+/* ── AI Details ── */
+
+.ai-details {
+  margin-top: 18px;
+}
+
+.ai-details-trigger {
+  cursor: pointer;
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    135deg,
+    rgba(11, 17, 35, 0.82),
+    rgba(28, 41, 71, 0.72)
+  );
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 0 28px rgba(34, 211, 238, 0.08);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ai-details-trigger::before {
+  content: "▸";
+  font-size: 16px;
+  color: var(--cyan);
+  transition: transform 0.2s ease;
+}
+
+.ai-details[open] .ai-details-trigger::before {
+  transform: rotate(90deg);
+}
+
+.ai-details-trigger:hover {
+  background: linear-gradient(135deg, var(--cyan-dim), var(--purple-dim));
+  border-color: var(--cyan-glow);
+  color: var(--cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(34, 211, 238, 0.12);
+}
+
+.ai-details-trigger::marker {
+  content: "";
+}
+
+.ai-details-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.ai-details-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease;
+}
+
+.ai-details[open] .ai-details-grid {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  .ai-details[open] .ai-details-grid {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+.ai-topic {
+  background: var(--glass);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: grid;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.ai-topic::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--cyan), transparent);
+  opacity: 0.4;
+}
+
+.ai-topic:hover {
+  border-color: var(--cyan-glow);
+}
+
+.ai-topic h3 {
+  font-size: 15px;
+  color: white;
+}
+
+.ai-topic p {
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ai-topic ul {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.ai-topic li {
+  padding-left: 16px;
+  position: relative;
+}
+
+.ai-topic li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow: 0 0 4px var(--purple-glow);
+}
+
+.ai-topic-tall {
+  grid-row: span 2;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+}
+
+.ai-topic-tall ul {
+  align-content: space-between;
+  height: 100%;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 1100px) {
@@ -1207,8 +1370,13 @@ details[open] .timeline-summary::before {
   .detail-grid,
   .oss-grid,
   .talks-layout,
+  .ai-details-grid,
   .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ai-topic-tall {
+    grid-row: span 1;
   }
 
   .stat-grid {

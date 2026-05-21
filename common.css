@@ -54,6 +54,76 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#starfield .starfield-star {
+  animation-name: starfield-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes starfield-twinkle {
+  0%,
+  100% {
+    opacity: var(--star-op-min, 0.2);
+  }
+
+  50% {
+    opacity: var(--star-op-max, 0.8);
+  }
+}
+
+#starfield .starfield-shooting {
+  animation-name: starfield-shooting-streak;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: var(--shoot-cycle, 22s);
+  animation-delay: var(--shoot-delay, 0s);
+  transform-box: fill-box;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+@keyframes starfield-shooting-streak {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+
+  1.5% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translate(var(--shoot-travel-x), var(--shoot-travel-y));
+  }
+
+  11% {
+    opacity: 0;
+    transform: translate(var(--shoot-travel-x), var(--shoot-travel-y));
+  }
+
+  11.01%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #starfield .starfield-star {
+    animation: none;
+  }
+
+  #starfield .starfield-shooting {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 .nebula-layer {
