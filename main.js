@@ -25,148 +25,171 @@ const setupPrintHandlers = () => {
   window.addEventListener("afterprint", () => toggleTimelineDetails(false));
 };
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+const STARFIELD_SHOOTING_COUNT = 14;
+const STARFIELD_SHOOT_TRAVEL_SCALE = 85;
+
 const setupStarfield = () => {
-  const starCanvas = document.getElementById("starfield");
-  if (!starCanvas) {
+  const starfield = document.getElementById("starfield");
+  if (!starfield) {
     return;
   }
 
-  const starContext = starCanvas.getContext("2d");
-  if (!starContext) {
-    return;
-  }
-
-  const stars = [];
-  const shootingStars = [];
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
   const fullCircle = Math.PI * 2;
-  let animationFrame;
 
-  const resizeCanvas = () => {
-    const scrollHeight = document.documentElement.scrollHeight;
-    starCanvas.width = window.innerWidth;
-    starCanvas.height = scrollHeight;
+  const defs = document.createElementNS(SVG_NS, "defs");
+  const starsLayer = document.createElementNS(SVG_NS, "g");
+  const shootingLayer = document.createElementNS(SVG_NS, "g");
+  starfield.replaceChildren(defs, starsLayer, shootingLayer);
+
+  let layoutWidth = 0;
+  let layoutHeight = 0;
+  let shootingGradCounter = 0;
+
+  const syncViewBox = () => {
+    const width = window.innerWidth;
+    const height = document.documentElement.scrollHeight;
+    layoutWidth = width;
+    layoutHeight = height;
+    starfield.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    starfield.setAttribute("preserveAspectRatio", "none");
   };
 
-  const createStars = () => {
-    const area = starCanvas.width * window.innerHeight;
+  const fillShootingLayer = () => {
+    const baseCycleSeconds = 18;
+    for (let index = 0; index < STARFIELD_SHOOTING_COUNT; index++) {
+      const velocityX = (Math.random() - 0.3) * 6;
+      const velocityY = Math.random() * 3 + 1.5;
+      const tailLength = Math.random() * 80 + 40;
+      const tailEndX = -(velocityX * tailLength) / 6;
+      const tailEndY = -(velocityY * tailLength) / 6;
+
+      const gradientId = `shoot-grad-${shootingGradCounter}`;
+      shootingGradCounter += 1;
+      const gradient = document.createElementNS(SVG_NS, "linearGradient");
+      gradient.setAttribute("id", gradientId);
+      gradient.setAttribute("gradientUnits", "userSpaceOnUse");
+      gradient.setAttribute("x1", "0");
+      gradient.setAttribute("y1", "0");
+      gradient.setAttribute("x2", String(tailEndX));
+      gradient.setAttribute("y2", String(tailEndY));
+
+      const stopNear = document.createElementNS(SVG_NS, "stop");
+      stopNear.setAttribute("offset", "0%");
+      stopNear.setAttribute("stop-color", "rgb(34, 211, 238)");
+      stopNear.setAttribute("stop-opacity", "0.9");
+
+      const stopMid = document.createElementNS(SVG_NS, "stop");
+      stopMid.setAttribute("offset", "30%");
+      stopMid.setAttribute("stop-color", "rgb(255, 255, 255)");
+      stopMid.setAttribute("stop-opacity", "0.6");
+
+      const stopFar = document.createElementNS(SVG_NS, "stop");
+      stopFar.setAttribute("offset", "100%");
+      stopFar.setAttribute("stop-color", "rgb(255, 255, 255)");
+      stopFar.setAttribute("stop-opacity", "0");
+
+      gradient.append(stopNear, stopMid, stopFar);
+      defs.appendChild(gradient);
+
+      const tailLine = document.createElementNS(SVG_NS, "line");
+      tailLine.setAttribute("stroke", `url(#${gradientId})`);
+      tailLine.setAttribute("stroke-width", "1.5");
+      tailLine.setAttribute("stroke-linecap", "round");
+      tailLine.setAttribute("x1", "0");
+      tailLine.setAttribute("y1", "0");
+      tailLine.setAttribute("x2", String(tailEndX));
+      tailLine.setAttribute("y2", String(tailEndY));
+
+      const head = document.createElementNS(SVG_NS, "circle");
+      head.setAttribute("cx", "0");
+      head.setAttribute("cy", "0");
+      head.setAttribute("r", "1.5");
+      head.setAttribute("fill", "rgb(34, 211, 238)");
+
+      const motionGroup = document.createElementNS(SVG_NS, "g");
+      motionGroup.classList.add("starfield-shooting");
+      motionGroup.append(tailLine, head);
+
+      const travelXpx = velocityX * STARFIELD_SHOOT_TRAVEL_SCALE;
+      const travelYpx = velocityY * STARFIELD_SHOOT_TRAVEL_SCALE;
+      motionGroup.style.setProperty("--shoot-travel-x", `${travelXpx}px`);
+      motionGroup.style.setProperty("--shoot-travel-y", `${travelYpx}px`);
+
+      const cycleJitter = baseCycleSeconds + (Math.random() - 0.5) * 8;
+      motionGroup.style.setProperty("--shoot-cycle", `${cycleJitter}s`);
+
+      const delaySpread =
+        (index / STARFIELD_SHOOTING_COUNT) * cycleJitter +
+        Math.random() * 4 -
+        cycleJitter;
+      motionGroup.style.setProperty("--shoot-delay", `${delaySpread}s`);
+
+      const anchor = document.createElementNS(SVG_NS, "g");
+      anchor.setAttribute(
+        "transform",
+        `translate(${Math.random() * layoutWidth} ${Math.random() * layoutHeight * 0.42})`,
+      );
+      anchor.appendChild(motionGroup);
+      shootingLayer.appendChild(anchor);
+    }
+  };
+
+  const rebuild = () => {
+    syncViewBox();
+    starsLayer.replaceChildren();
+    defs.replaceChildren();
+    shootingLayer.replaceChildren();
+    shootingGradCounter = 0;
+
+    const area = layoutWidth * window.innerHeight;
     const starCount = Math.min(200, Math.floor(area / 10_000));
-    stars.length = 0;
 
     for (let i = 0; i < starCount; i++) {
       const hue = Math.random() > 0.85 ? (Math.random() > 0.5 ? 190 : 270) : 0;
-      const color = hue > 0 ? `hsl(${hue}, 70%, 80%)` : "white";
+      const fill = hue > 0 ? `hsl(${hue}, 70%, 80%)` : "#ffffff";
+      const baseOpacity = Math.random() * 0.6 + 0.2;
+      const twinkleSpeed = Math.random() * 0.03 + 0.008;
+      const radius = Math.random() * 1.2 + 0.3;
 
-      stars.push({
-        x: Math.random() * starCanvas.width,
-        y: Math.random() * starCanvas.height,
-        radius: Math.random() * 1.2 + 0.3,
-        baseOpacity: Math.random() * 0.6 + 0.2,
-        twinkleSpeed: Math.random() * 0.03 + 0.008,
-        phase: Math.random() * fullCircle,
-        color,
-      });
-    }
-  };
+      const circle = document.createElementNS(SVG_NS, "circle");
+      circle.setAttribute("cx", String(Math.random() * layoutWidth));
+      circle.setAttribute("cy", String(Math.random() * layoutHeight));
+      circle.setAttribute("r", String(radius));
+      circle.setAttribute("fill", fill);
+      circle.classList.add("starfield-star");
 
-  const renderStars = (time) => {
-    const canvasWidth = starCanvas.width;
-    const canvasHeight = starCanvas.height;
-    starContext.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    for (const star of stars) {
-      const twinkle =
-        Math.sin(time * star.twinkleSpeed + star.phase) * 0.35 + 0.65;
-      const opacity = star.baseOpacity * twinkle;
-
-      starContext.globalAlpha = opacity;
-      starContext.fillStyle = star.color;
-      starContext.beginPath();
-      starContext.arc(star.x, star.y, star.radius, 0, fullCircle);
-      starContext.fill();
-    }
-
-    starContext.globalAlpha = 1;
-    if (Math.random() < 0.003) {
-      shootingStars.push({
-        x: Math.random() * canvasWidth,
-        y: Math.random() * canvasHeight * 0.4,
-        velocityX: (Math.random() - 0.3) * 6,
-        velocityY: Math.random() * 3 + 1.5,
-        life: 1.0,
-        tailLength: Math.random() * 80 + 40,
-      });
-    }
-
-    if (shootingStars.length > 0) {
-      starContext.lineWidth = 1.5;
-
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const shootingStar = shootingStars[i];
-        shootingStar.x += shootingStar.velocityX;
-        shootingStar.y += shootingStar.velocityY;
-        shootingStar.life -= 0.012;
-
-        if (shootingStar.life <= 0) {
-          shootingStars.splice(i, 1);
-          continue;
-        }
-
-        const tailEndX =
-          shootingStar.x -
-          (shootingStar.velocityX * shootingStar.tailLength) / 6;
-        const tailEndY =
-          shootingStar.y -
-          (shootingStar.velocityY * shootingStar.tailLength) / 6;
-
-        const gradient = starContext.createLinearGradient(
-          shootingStar.x,
-          shootingStar.y,
-          tailEndX,
-          tailEndY,
-        );
-        gradient.addColorStop(
-          0,
-          `rgba(34, 211, 238, ${shootingStar.life * 0.9})`,
-        );
-        gradient.addColorStop(
-          0.3,
-          `rgba(255, 255, 255, ${shootingStar.life * 0.6})`,
-        );
-        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-
-        starContext.strokeStyle = gradient;
-        starContext.beginPath();
-        starContext.moveTo(shootingStar.x, shootingStar.y);
-        starContext.lineTo(tailEndX, tailEndY);
-        starContext.stroke();
-
-        starContext.fillStyle = `rgba(34, 211, 238, ${shootingStar.life})`;
-        starContext.beginPath();
-        starContext.arc(shootingStar.x, shootingStar.y, 1.5, 0, fullCircle);
-        starContext.fill();
+      if (prefersReducedMotion) {
+        const steadyOpacity = baseOpacity * 0.65;
+        circle.style.opacity = String(steadyOpacity);
+      } else {
+        const periodSec = fullCircle / (twinkleSpeed * 1000);
+        circle.style.setProperty("--star-op-min", String(baseOpacity * 0.3));
+        circle.style.setProperty("--star-op-max", String(baseOpacity));
+        circle.style.animationDuration = `${periodSec}s`;
+        circle.style.animationDelay = `-${Math.random() * periodSec}s`;
       }
+
+      starsLayer.appendChild(circle);
     }
 
-    starContext.globalAlpha = 1;
-    animationFrame = requestAnimationFrame(renderStars);
+    if (!prefersReducedMotion) {
+      fillShootingLayer();
+    }
   };
 
-  resizeCanvas();
-  createStars();
-  requestAnimationFrame(renderStars);
+  rebuild();
 
-  let resizeTimer;
+  let resizeTimer = 0;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      resizeCanvas();
-      createStars();
-    }, 200);
+    resizeTimer = setTimeout(rebuild, 200);
   });
 
-  const resizeObserver = new ResizeObserver(() => {
-    resizeCanvas();
-  });
+  const resizeObserver = new ResizeObserver(rebuild);
   resizeObserver.observe(document.documentElement);
 };
 
